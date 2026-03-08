@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Dia das Mulheres 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink-light: #fce4ec;
+    --pink-mid: #f8bbd0;
+    --pink-strong: #e91e8c;
+    --pink-soft: #f48fb1;
+    --white: #fffaf9;
+    --text-dark: #5a1a3a;
+    --text-mid: #a0527a;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lora', serif;
+    overflow: hidden;
+    background: var(--white);
+    position: relative;
+    cursor: default;
+  }
+
+  /* ── Fundo listrado ── */
+  .stripes {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--pink-light) 0px,
+      var(--pink-light) 38px,
+      var(--white)      38px,
+      var(--white)      76px
+    );
+  }
+  .stripes::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.55) 0%, transparent 70%);
+  }
+
+  /* ── Pétalas ── */
+  .petals { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+  .petal {
+    position: absolute;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+  }
+
+  /* ── Palco ── */
+  .stage {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .tagline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(0.85rem, 2vw, 1.05rem);
+    font-style: italic;
+    color: var(--text-mid);
+    letter-spacing: 0.15em;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 0.8s 0.3s ease forwards;
+  }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* ── Envelope ── */
+  .envelope-wrap {
+    position: relative;
+    width: 240px;
+    height: 175px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+    animation: fadeUp 0.9s 0.6s ease forwards;
+    transition: transform 0.3s ease;
+  }
+  .envelope-wrap:hover:not(.open) { transform: scale(1.04); }
+
+  .envelope {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 8px 32px rgba(233,30,140,0.22)) drop-shadow(0 2px 8px rgba(0,0,0,0.08));
+  }
+
+  .env-body {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #fff0f5 0%, #fce4ec 100%);
+    border-radius: 4px 4px 8px 8px;
+    border: 1.5px solid #f8bbd0;
+  }
+  .env-fold-left {
+    position: absolute; bottom: 0; left: 0;
+    width: 0; height: 0; border-style: solid;
+    border-width: 175px 120px 0 0;
+    border-color: transparent #f9d5e5 transparent transparent;
+  }
+  .env-fold-right {
+    position: absolute; bottom: 0; right: 0;
+    width: 0; height: 0; border-style: solid;
+    border-width: 175px 0 0 120px;
+    border-color: transparent transparent transparent #f9d5e5;
+  }
+  .env-fold-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    width: 0; height: 0; border-style: solid;
+    border-width: 0 120px 92px 120px;
+    border-color: transparent transparent #f0c4d8 transparent;
+  }
+  .env-flap {
+    position: absolute; top: 0; left: 0; right: 0;
+    width: 0; height: 0; border-style: solid;
+    border-width: 100px 120px 0 120px;
+    border-color: #fadadd transparent transparent transparent;
+    transform-origin: top center;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 3;
+  }
+  .envelope-wrap.open .env-flap { transform: rotateX(180deg); }
+
+  .seal {
+    position: absolute;
+    top: 68px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    font-size: 28px;
+    filter: drop-shadow(0 2px 4px rgba(233,30,140,0.3));
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+  .envelope-wrap.open .seal {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.4);
+  }
+
+  .hint {
+    position: absolute;
+    bottom: -28px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    color: var(--text-mid);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    font-style: italic;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.45} 50%{opacity:1} }
+
+  /* ── Overlay da carta ── */
+  .letter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+  .letter-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .letter-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(252, 228, 236, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  /* ── A carta ── */
+  .letter-card {
+    position: relative;
+    z-index: 2;
+    width: min(88vw, 420px);
+    max-height: 84vh;
+    overflow-y: auto;
+    background: #fffaf9;
+    border-radius: 14px;
+    padding: clamp(24px, 6vw, 44px) clamp(22px, 5vw, 40px);
+    box-shadow:
+      0 28px 70px rgba(233,30,140,0.2),
+      0 4px 18px rgba(0,0,0,0.07),
+      inset 0 0 0 1.5px #fce4ec;
+    text-align: center;
+    transform: translateY(70px) scale(0.86);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 27px,
+      rgba(248,187,208,0.15) 27px, rgba(248,187,208,0.15) 28px
+    );
+  }
+  .letter-overlay.open .letter-card {
+    transform: translateY(0) scale(1);
+  }
+
+  .letter-card::-webkit-scrollbar { width: 4px; }
+  .letter-card::-webkit-scrollbar-track { background: transparent; }
+  .letter-card::-webkit-scrollbar-thumb { background: #f8bbd0; border-radius: 4px; }
+
+  .letter-ornament {
+    font-size: 2.2rem;
+    margin-bottom: 6px;
+    line-height: 1;
+    display: block;
+    animation: heartBeat 1.6s ease-in-out infinite;
+  }
+  @keyframes heartBeat {
+    0%,100%{transform:scale(1)} 14%{transform:scale(1.2)} 28%{transform:scale(1)} 42%{transform:scale(1.1)} 56%{transform:scale(1)}
+  }
+
+  .letter-date {
+    font-size: 0.75rem;
+    color: var(--text-mid);
+    font-style: italic;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .deco-line {
+    width: 50px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--pink-soft), transparent);
+    margin: 10px auto;
+  }
+
+  .letter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 3.8vw, 1.3rem);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--pink-strong);
+    line-height: 1.35;
+  }
+
+  .letter-body {
+    font-size: clamp(0.85rem, 2.5vw, 0.97rem);
+    color: #7a3255;
+    line-height: 1.9;
+    margin: 14px 0 8px;
+  }
+
+  .letter-sign {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    color: var(--pink-strong);
+    line-height: 1.65;
+  }
+
+  .btn-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding: 10px 26px;
+    background: linear-gradient(135deg, #f48fb1, #e91e8c);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(233,30,140,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-close:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(233,30,140,0.45); }
+  .btn-close:active { transform: scale(0.96); }
+
+  /* ── Corações ── */
+  .hearts-container { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+  .floating-heart {
+    position: absolute;
+    opacity: 0;
+    animation: heartFloat linear forwards;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(233,30,140,0.4));
+  }
+  @keyframes heartFloat {
+    0%   { transform: translateY(0) scale(0.5) rotate(-15deg); opacity: 0; }
+    15%  { opacity: 1; }
+    75%  { opacity: 0.8; }
+    100% { transform: translateY(-420px) scale(1.1) rotate(20deg); opacity: 0; }
+  }
+
+  /* ── Confetes ── */
+  .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 55; }
+  .conf {
+    position: absolute;
+    opacity: 0;
+    animation: confettiFall ease-out forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0); }
+    100% { opacity: 0; transform: translateY(360px) rotate(720deg) scale(0.3); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stripes"></div>
+<div class="petals" id="petals"></div>
+<div class="hearts-container" id="hearts"></div>
+<div class="confetti-container" id="confetti"></div>
+
+<!-- Overlay expandido da carta -->
+<div class="letter-overlay" id="letterOverlay">
+  <div class="letter-backdrop" id="letterBackdrop"></div>
+  <div class="letter-card">
+    <span class="letter-ornament">💌</span>
+    <div class="letter-date">8 de março de 2026</div>
+    <div class="deco-line"></div>
+    <div class="letter-title">Hoje é o dia da minha patinha ❤️</div>
+    <div class="deco-line"></div>
+    <div class="letter-body">
+      Espero poder rever seu sorriso em breve.<br><br>
+      Sou muito grato pela dama incrível que me escolheu para dançar a vida eterna.<br><br>
+      Feliz Dia das Mulheres, minha princesa. Tenho muito orgulho de você e de todas as suas conquistas. Admiro profundamente a sua perseverança, sua fé e todo o amor que você carrega no coração.<br><br>
+      Obrigado pela sua presença tão forte e marcante, que me impulsiona a ser cada vez melhor.
+    </div>
+    <div class="deco-line"></div>
+    <div class="letter-sign">
+      Eu te amo, Giulia.<br>
+      Minha robotiquinha ❤️
+    </div>
+    <button class="btn-close" id="btnClose">fechar carta 💌</button>
+  </div>
+</div>
+
+<!-- Envelope -->
+<div class="stage">
+  <p class="tagline">8 de março — Dia Internacional da Mulher</p>
+  <div class="envelope-wrap" id="envelope" title="Clique para abrir 💌">
+    <div class="envelope">
+      <div class="env-body"></div>
+      <div class="env-fold-left"></div>
+      <div class="env-fold-right"></div>
+      <div class="env-fold-bottom"></div>
+      <div class="env-flap"></div>
+    </div>
+    <div class="seal">💝</div>
+    <div class="hint" id="hint">clique para abrir 💌</div>
+  </div>
+</div>
+
+<script>
+  /* ── Pétalas ── */
+  const petalColors = ['#f48fb1','#f8bbd0','#e91e8c','#fce4ec','#ec407a','#ff80ab'];
+  const petalsEl = document.getElementById('petals');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.cssText = `
+      left:${Math.random()*100}%;top:${-Math.random()*20}%;
+      background:${petalColors[Math.floor(Math.random()*petalColors.length)]};
+      animation-duration:${5+Math.random()*8}s;
+      animation-delay:${Math.random()*10}s;
+      width:${8+Math.random()*8}px;height:${10+Math.random()*10}px;
+    `;
+    petalsEl.appendChild(p);
+  }
+
+  /* ── Lógica abrir/fechar ── */
+  const env      = document.getElementById('envelope');
+  const overlay  = document.getElementById('letterOverlay');
+  const backdrop = document.getElementById('letterBackdrop');
+  const btnClose = document.getElementById('btnClose');
+  const hint     = document.getElementById('hint');
+  let opened = false;
+  let heartsInterval = null;
+
+  function openLetter() {
+    opened = true;
+    env.classList.add('open');
+    hint.textContent = 'clique para fechar 💌';
+    overlay.classList.add('open');
+    spawnConfetti();
+    spawnHeartsBurst();
+    heartsInterval = setInterval(spawnHeartDrift, 650);
+  }
+
+  function closeLetter() {
+    opened = false;
+    env.classList.remove('open');
+    hint.textContent = 'clique para abrir 💌';
+    overlay.classList.remove('open');
+    clearInterval(heartsInterval);
+    heartsInterval = null;
+  }
+
+  env.addEventListener('click', () => opened ? closeLetter() : openLetter());
+  btnClose.addEventListener('click', e => { e.stopPropagation(); closeLetter(); });
+  backdrop.addEventListener('click', closeLetter);
+
+  /* ── Corações: explosão ── */
+  function spawnHeartsBurst() {
+    const el = document.getElementById('hearts');
+    const emojis = ['❤️','💕','💖','💗','💓','💞','🩷','💝'];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    for (let i = 0; i < 24; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'floating-heart';
+        h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        const sx = (Math.random()-0.5) * 360;
+        h.style.cssText = `
+          left:${cx+sx}px;top:${cy}px;
+          font-size:${1.1+Math.random()*1.5}rem;
+          animation-duration:${1.8+Math.random()*1.4}s;
+        `;
+        el.appendChild(h);
+        setTimeout(()=>h.remove(), 3800);
+      }, i * 55);
+    }
+  }
+
+  /* ── Corações: deriva contínua ── */
+  function spawnHeartDrift() {
+    if (!opened) return;
+    const el = document.getElementById('hearts');
+    const emojis = ['❤️','💕','💖','💗','🩷'];
+    const h = document.createElement('div');
+    h.className = 'floating-heart';
+    h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    h.style.cssText = `
+      left:${10+Math.random()*80}vw;
+      top:${50+Math.random()*35}vh;
+      font-size:${0.9+Math.random()*1}rem;
+      animation-duration:${2.8+Math.random()*1.8}s;
+    `;
+    el.appendChild(h);
+    setTimeout(()=>h.remove(), 5200);
+  }
+
+  /* ── Confetes ── */
+  function spawnConfetti() {
+    const container = document.getElementById('confetti');
+    const colors = ['#f48fb1','#e91e8c','#fff','#fce4ec','#ec407a','#ff80ab','#ff4081','#fadadd'];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight * 0.3;
+    for (let i = 0; i < 75; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'conf';
+        const angle = (Math.random()*220)-110;
+        const dist  = 80+Math.random()*220;
+        c.style.cssText = `
+          left:${cx+Math.cos(angle*Math.PI/180)*dist*0.7}px;
+          top:${cy+(Math.random()*-90)}px;
+          background:${colors[Math.floor(Math.random()*colors.length)]};
+          animation-duration:${1.3+Math.random()*0.9}s;
+          width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;
+          border-radius:${Math.random()>0.5?'50%':'2px'};
+        `;
+        container.appendChild(c);
+        setTimeout(()=>c.remove(), 3000);
+      }, Math.random()*380);
+    }
+  }
+</script>
+</body>
+</html>
